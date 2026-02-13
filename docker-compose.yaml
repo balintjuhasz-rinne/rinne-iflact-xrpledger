@@ -1,0 +1,59 @@
+version: "3"
+services:
+  xrp:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: xrp-node
+    #restart: unless-stopped
+    tty: true
+    ports:
+      - "4000:80"
+      - "9229:9229"
+    environment: 
+      APP_COMMAND: start:debug
+      APP_ENV: develop
+      DB_HOST: db
+      DB_PORT: 3306
+      DB_USERNAME: root
+      DB_PASSWORD: secret
+      DB_DATABASE: xrp
+      DB_MIGRATION_SYNCHRONIZE: false
+    volumes:
+      - ./:/app:cached
+    networks:
+      - xrp-network
+  #  depends_on:
+  #    - db
+
+  #db:
+  #  image: mysql:8
+  #  container_name: xrp-db
+  #  restart: unless-stopped
+  #  tty: true
+  #  ports:
+  #    - "4001:3306"
+  #  environment:
+  #    MYSQL_DATABASE: xrp
+  #    MYSQL_ROOT_PASSWORD: secret
+  #    SERVICE_TAGS: dev
+  #    SERVICE_NAME: mysql
+  #  volumes:
+  #    - xrp-db8-data:/var/lib/mysql/
+  #    - ./environment/mysql/my.cnf:/etc/mysql/my.cnf
+  #  networks:
+  #    - xrp-network
+  #  healthcheck:
+  #    test: [ "CMD", "test -f var/lib/mysql/db" ]
+  #    timeout: 30s
+  #    retries: 10
+
+#Docker Networks
+networks:
+  xrp-network:
+    driver: bridge
+
+#Volumes
+volumes:
+  xrp-db8-data:
+    driver: local
